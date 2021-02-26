@@ -1,5 +1,10 @@
 # ChangeLog
 
+## [0.2.0]
+
+- Fix: 修复 exception handle：转换fail提示
+- Release to exe with auto-py-to-exe:  https://github.com/brentvollebregt/auto-py-to-exe
+
 
 ## [0.1.0]
 

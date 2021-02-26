@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+###     version #0.1.0              ###
+###     package by auto-py-to-exe   ###
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -55,17 +57,15 @@ class stdf2atdf(QWidget):
             # print('stdf2atdf ongoing...')
             self.setWindowTitle('stdf2atdf ongoing...') 
             try:
-                result=subprocess.check_output("stdfatdf "+input_file+" "+input_file+".atdf",stderr=subprocess.STDOUT)
-                # self.assertEqual(verbose, b'',"Unexpected info-level messages in simple request")
-            except subprocess.CalledProcessError as e:
+                subprocess.check_output("stdfatdf "+input_file+" "+input_file+".atdf",stderr=subprocess.STDOUT)
+            except Exception as e: # subprocess.CalledProcessError as e:
                 QMessageBox.critical(self,'ERROR','ERROR in convertion'+str(e),QMessageBox.Yes | QMessageBox.No,QMessageBox.Yes)
-            
-            if result==b'':
+                self.setWindowTitle('ERROR: Convert Fail')
+            else:
+                # self.assertEqual(verbose, b'',"Unexpected info-level messages in simple request")
                 self.setWindowTitle('Convert Done')
                 self.QLabl.setText('Output ATDF File：\n' + input_file+".atdf")
                 self.QLabl.setWordWrap(True)
-            else:
-                self.setWindowTitle('ERROR: Convert Fail')
 
         # cmd = 'bash say_hello.sh &'
         # print('cmd: {}'.format(cmd))
