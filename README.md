@@ -1,5 +1,10 @@
 # ChangeLog
 
+## [0.3.0]
+
+- Fix: 修复执行handle error错误
+- 增加了多个文件导入功能
+
 ## [0.2.0]
 
 - Fix: 修复 exception handle：转换fail提示
