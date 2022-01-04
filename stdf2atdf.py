@@ -1,13 +1,13 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-###     version #0.1.0              ###
+###     version #0.3.0              ###
 ###     package by auto-py-to-exe   ###
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 import subprocess
-
+import time
 import gzip
  
 def un_gz(file_name):
@@ -47,25 +47,30 @@ class stdf2atdf(QWidget):
             # print('ERROR: empty stdf file')
             self.setWindowTitle('ERROR: Empty stdf file!') 
         else:
-            input_file=self.stdf_input
-            input_file= input_file[8:]
-            end_ext=input_file[-3:]
-
-            if end_ext==".gz":
-                un_gz(input_file)
-                input_file=input_file[:-3]
-            # print('stdf2atdf ongoing...')
-            self.setWindowTitle('stdf2atdf ongoing...') 
-            try:
-                subprocess.check_output("stdfatdf "+input_file+" "+input_file+".atdf",stderr=subprocess.STDOUT)
-            except Exception as e: # subprocess.CalledProcessError as e:
-                QMessageBox.critical(self,'ERROR','ERROR in convertion'+str(e),QMessageBox.Yes | QMessageBox.No,QMessageBox.Yes)
-                self.setWindowTitle('ERROR: Convert Fail')
-            else:
-                # self.assertEqual(verbose, b'',"Unexpected info-level messages in simple request")
-                self.setWindowTitle('Convert Done')
-                self.QLabl.setText('Output ATDF File：\n' + input_file+".atdf")
-                self.QLabl.setWordWrap(True)
+            input_file=self.stdf_input.split('\n')
+            for single_file in input_file:
+                if len(single_file)<11:
+                    break
+                single_file= single_file[8:] # remove the subfix "file:///"
+                end_ext=single_file[-3:] # use for postfix judge if end with ".gz" will need to untar action
+                if end_ext==".gz":
+                    un_gz(single_file)
+                    single_file=single_file[:-3]
+                # print('stdf2atdf ongoing...')
+                self.setWindowTitle('stdf2atdf ongoing...') 
+                # time.sleep(0.5) 
+                try:
+                    subprocess.check_output("stdfatdf "+single_file+" "+single_file+".atdf",stderr=subprocess.STDOUT)
+                except Exception as e: # subprocess.CalledProcessError as e:
+                    QMessageBox.critical(self,'ERROR','ERROR in convertion'+str(e),QMessageBox.Yes | QMessageBox.No,QMessageBox.Yes)
+                    self.setWindowTitle('ERROR: Convert Fail')
+                    self.stdf_input=""
+                else:
+                    # self.assertEqual(verbose, b'',"Unexpected info-level messages in simple request")
+                    self.setWindowTitle('Convert Done')
+                    self.QLabl.setText('Output ATDF File：\n' + single_file+".atdf")
+                    self.stdf_input=""
+                    self.QLabl.setWordWrap(True)
 
         # cmd = 'bash say_hello.sh &'
         # print('cmd: {}'.format(cmd))
